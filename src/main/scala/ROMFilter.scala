@@ -44,7 +44,7 @@ class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]
   val softwarelists: Elem = scala.xml.XML.loadFile(xmlFile)
   val software: NodeSeq = softwarelists \ "softwarelist" \ "software"
 
-  val roms: List[ROMInfo] = software
+  val infos: List[ROMInfo] = software
     .iterator
     .flatMap { node =>
       val name = node \@ "name"
