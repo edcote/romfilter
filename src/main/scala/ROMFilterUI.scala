@@ -1,8 +1,4 @@
-package romfiler
-
-// https://stackoverflow.com/questions/24631289/scala-matcherror-in-swing-table-renderercomponent
-
-import romfilter.ROMFilter
+package romfilter
 
 import scala.swing.Table.AutoResizeMode
 import scala.swing._
@@ -83,12 +79,13 @@ object ROMFilterUI extends SimpleSwingApplication {
     // 2, 1
     var initial = Array(Array("", "", "", ""))
     val names = Array("Name", "Description", "Category", "Year")
+    val model = new ROMInfoModel()
 
-    val results = new Table(initial.asInstanceOf[Array[Array[Any]]], names.asInstanceOf[Array[Any]]) {
+    val table2dot1 = new Table(initial.asInstanceOf[Array[Array[Any]]], names.asInstanceOf[Array[Any]]) {
       autoResizeMode = AutoResizeMode.AllColumns
       visible = false
     }
-    layout(new ScrollPane(results)) = constraints(2, 1, fill = GridBagPanel.Fill.Both)
+    layout(new ScrollPane(table2dot1)) = constraints(2, 1, weightX = 2.0, fill = GridBagPanel.Fill.Both)
 
     // 0, 2
     val filterButton = new Button("Filter")
@@ -103,21 +100,18 @@ object ROMFilterUI extends SimpleSwingApplication {
     // Event handling
     reactions += {
       case ButtonClicked(`filterButton`) =>
-        new ROMFilter(
-          publishersToFilter = publishersToFilterArea.text.split("\n"),
-          categoriesToFilter = categoriesToFilterArea.text.split("\n")
-        )
+        new ROMFilter(publishersToFilterArea.text.split("\n"), categoriesToFilterArea.text.split("\n"))
           .infos
           .foreach { info =>
-            // FIXME: add row to table
+            // FIXME: make immutable
+            model.infos.append(info)
           }
-
-        results.visible = true
+        table2dot1.visible = true
+        table2dot1.model = model
 
       case ButtonClicked(`cancelButton`) =>
         sys.exit(0)
     }
-
   }
 
   def top: Frame = new MainFrame {
