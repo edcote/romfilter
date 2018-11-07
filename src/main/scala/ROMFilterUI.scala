@@ -1,5 +1,7 @@
 package romfilter
 
+import javax.swing.JTable
+
 import scala.swing.Table.AutoResizeMode
 import scala.swing._
 import scala.swing.event.ButtonClicked
@@ -81,8 +83,11 @@ object ROMFilterUI extends SimpleSwingApplication {
 
     val table2dot1 = new Table(0, 0) {
       autoResizeMode = AutoResizeMode.AllColumns
+      // see: https://stackoverflow.com/questions/31092309/jtable-doesnt-sort-despite-having-enabled-auto-row-sorter-and-using-comparabl
+      override lazy val peer: JTable = new JTable with SuperMixin
     }
     layout(new ScrollPane(table2dot1)) = constraints(2, 1, weightX = 2.0, fill = GridBagPanel.Fill.Both)
+
     table2dot1.peer.setAutoCreateRowSorter(true)
     table2dot1.model = model
 
@@ -106,7 +111,7 @@ object ROMFilterUI extends SimpleSwingApplication {
             model.infos.append(info)
             model.fireTableDataChanged()
           }
-        println("Filter DONE!")
+        Dialog.showMessage(contents.head, "Success!")
 
       case ButtonClicked(`cancelButton`) =>
         sys.exit(0)

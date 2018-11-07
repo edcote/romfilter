@@ -29,7 +29,7 @@ class ROMInfoModel extends AbstractTableModel {
     }
   }
 
-  override def getColumnClass(columnIndex: Int): Class[_ <: String] = {
+  override def getColumnClass(columnIndex: Int): Class[_] = {
     getValueAt(0, columnIndex).getClass
   }
 
