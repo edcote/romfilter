@@ -14,41 +14,43 @@ object ROMFilterUI extends SimpleSwingApplication {
 
   private val defaultPublishersToFilter =
     """
+      |???
       |bootleg
       |cart2disk
+      |coverdisk
       |doujin
+      |hack
       |homebrew
+      |pirate
       |tape2disk
       |type-in
       |unknown
       |unlicensed
+      |unofficial
     """.stripMargin.trim
 
   private val defaultCategoriesToFilter =
     """
-      |Ball & Paddle
-      |BIOS
+      |Board Game / Chess Machine
       |Casino
-      |Climber
-      |Mahjong
+      |Computer
+      |Electromechanical
+      |Game Console / Home Videogame
+      |Handheld
       |Mature
-      |Maze
-      |Mini-Games
-      |Misc.
-      |Misc. Betting
+      |Medal Game
+      |Misc. /
+      |MultiGame
+      |Printer
       |Puzzle / Cards
       |Puzzle / Sliding
       |Quiz
       |Rhythm
-      |Sports / Armwrestling
-      |Sports / Bull Fighting
-      |Sports / Darts
-      |Sports / Fishing
       |Sports / Horse Racing
-      |Sports / Horseshoes
-      |Surround
+      |System
       |Tabletop
-      |Unplayable
+      |Utilities
+      |Whac-A-Mole
     """.stripMargin.trim
 
   lazy val ui = new GridBagPanel {
