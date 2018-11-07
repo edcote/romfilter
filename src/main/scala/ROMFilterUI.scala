@@ -1,12 +1,7 @@
 package romfilter
 
-import java.util.Comparator
-
-import javax.swing.{RowSorter, SortOrder}
+import javax.swing.JTable
 import javax.swing.table.TableRowSorter
-
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 import scala.swing.Table.AutoResizeMode
 import scala.swing._
@@ -87,14 +82,14 @@ object ROMFilterUI extends SimpleSwingApplication {
     // 2, 1
     val model = new ROMInfoModel()
     val rowSorter = new TableRowSorter(model)
-//    for (col <- names.indices) {
-//      rowSorter.setSortable(col, true)
-//    }
+    //    for (col <- names.indices) {
+    //      rowSorter.setSortable(col, true)
+    //    }
 
 
     val table2dot1 = new Table(0, 0) {
       autoResizeMode = AutoResizeMode.AllColumns
-//      peer.setRowSorter(rowSorter)
+      //      peer.setRowSorter(rowSorter)
       // see: https://stackoverflow.com/questions/31092309/jtable-doesnt-sort-despite-having-enabled-auto-row-sorter-and-using-comparabl
       override lazy val peer: JTable = new JTable with SuperMixin
     }
