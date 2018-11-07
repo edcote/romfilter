@@ -7,6 +7,7 @@ import javax.swing.table.TableRowSorter
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
+
 import scala.swing.Table.AutoResizeMode
 import scala.swing._
 import scala.swing.event._
@@ -84,8 +85,6 @@ object ROMFilterUI extends SimpleSwingApplication {
     layout(new ScrollPane(categoriesToFilterArea)) = constraints(1, 1, fill = GridBagPanel.Fill.Both)
 
     // 2, 1
-    var initial = Array(Array("", "", "", ""))
-    val names = Array("Name", "Description", "Category", "Year")
     val model = new ROMInfoModel()
     val rowSorter = new TableRowSorter(model)
 //    for (col <- names.indices) {
@@ -93,12 +92,16 @@ object ROMFilterUI extends SimpleSwingApplication {
 //    }
 
 
-    val table2dot1 = new Table(initial.asInstanceOf[Array[Array[Any]]], names.asInstanceOf[Array[Any]]) {
+    val table2dot1 = new Table(0, 0) {
       autoResizeMode = AutoResizeMode.AllColumns
-      visible = false
-      peer.setRowSorter(rowSorter)
+//      peer.setRowSorter(rowSorter)
+      // see: https://stackoverflow.com/questions/31092309/jtable-doesnt-sort-despite-having-enabled-auto-row-sorter-and-using-comparabl
+      override lazy val peer: JTable = new JTable with SuperMixin
     }
     layout(new ScrollPane(table2dot1)) = constraints(2, 1, weightX = 2.0, fill = GridBagPanel.Fill.Both)
+
+    table2dot1.peer.setAutoCreateRowSorter(true)
+    table2dot1.model = model
 
     // 0, 2
     val filterButton = new Button("Filter")
@@ -118,9 +121,9 @@ object ROMFilterUI extends SimpleSwingApplication {
           .foreach { info =>
             // FIXME: make immutable
             model.infos.append(info)
+            model.fireTableDataChanged()
           }
-        table2dot1.visible = true
-        table2dot1.model = model
+        Dialog.showMessage(contents.head, "Success!")
       case ButtonClicked(`cancelButton`) =>
         sys.exit(0)
     }
