@@ -1,6 +1,8 @@
 package romfilter
 
-import javax.swing.JTable
+import javax.swing.table.{TableModel, TableRowSorter}
+import javax.swing._
+import javax.swing.event.{DocumentEvent, ListSelectionEvent}
 
 import scala.swing.Table.AutoResizeMode
 import scala.swing._
@@ -99,7 +101,12 @@ object ROMFilterUI extends SimpleSwingApplication {
     val model = new ROMInfoModel()
     table2dot1.model = model
 
-    table2dot1.peer.setAutoCreateRowSorter(true)
+    val sorter = new TableRowSorter(model)
+    table2dot1.peer.setRowSorter(sorter)
+
+    table2dot1.peer.setSelectionModel(new DefaultListSelectionModel() {
+      setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
+    })
 
     // 0, 2
     val filterButton = new Button("Filter")
@@ -107,12 +114,16 @@ object ROMFilterUI extends SimpleSwingApplication {
     listenTo(filterButton)
 
     // 2, 2
-    val cancelButton = new Button("Cancel")
-    layout(cancelButton) = constraints(2, 2)
-    listenTo(cancelButton)
+    val filterText = new TextField("")
+    layout(filterText) = constraints(2, 2, fill = GridBagPanel.Fill.Both)
+    listenTo(filterText)
 
     // Event handling
     reactions += {
+
+      case ActionEvent(`table2dot1`) =>
+        println("Hello")
+
       case ButtonClicked(`filterButton`) =>
         model.infos.clear()
 
@@ -125,13 +136,16 @@ object ROMFilterUI extends SimpleSwingApplication {
           }
 
         Dialog.showMessage(contents.head, "Success!")
-      case ButtonClicked(`cancelButton`) =>
-        sys.exit(0)
+
+      case EditDone(`filterText`) =>
+        val filter: RowFilter[ROMInfoModel, Integer] = RowFilter.regexFilter(filterText.text, 0, 1, 2, 3, 4)
+        sorter.setRowFilter(filter)
+
     }
   }
 
   def top: Frame = new MainFrame {
-    title = "ROM Filter UI"
+    title = "MAME ROM Filter UI"
     contents = ui
     visible = true
   }
