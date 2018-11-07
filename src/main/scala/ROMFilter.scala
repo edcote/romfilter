@@ -13,6 +13,7 @@ case class ROMInfo(name: String, cloneof: String, description: String, publisher
 
 class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]) {
   // Load and parse category file
+  // FIXME: https://github.com/mamesupport/catver.ini/blob/master/catver.ini
   val catverFile: String = getClass.getResource("/catver.ini").getFile
 
   def validCategory(category: String): Boolean =

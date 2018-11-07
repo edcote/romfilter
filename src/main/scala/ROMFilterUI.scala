@@ -1,8 +1,15 @@
 package romfilter
 
+import java.util.Comparator
+
+import javax.swing.{RowSorter, SortOrder}
+import javax.swing.table.TableRowSorter
+
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 import scala.swing.Table.AutoResizeMode
 import scala.swing._
-import scala.swing.event.ButtonClicked
+import scala.swing.event._
 
 object ROMFilterUI extends SimpleSwingApplication {
 
@@ -80,10 +87,16 @@ object ROMFilterUI extends SimpleSwingApplication {
     var initial = Array(Array("", "", "", ""))
     val names = Array("Name", "Description", "Category", "Year")
     val model = new ROMInfoModel()
+    val rowSorter = new TableRowSorter(model)
+//    for (col <- names.indices) {
+//      rowSorter.setSortable(col, true)
+//    }
+
 
     val table2dot1 = new Table(initial.asInstanceOf[Array[Array[Any]]], names.asInstanceOf[Array[Any]]) {
       autoResizeMode = AutoResizeMode.AllColumns
       visible = false
+      peer.setRowSorter(rowSorter)
     }
     layout(new ScrollPane(table2dot1)) = constraints(2, 1, weightX = 2.0, fill = GridBagPanel.Fill.Both)
 
@@ -108,7 +121,6 @@ object ROMFilterUI extends SimpleSwingApplication {
           }
         table2dot1.visible = true
         table2dot1.model = model
-
       case ButtonClicked(`cancelButton`) =>
         sys.exit(0)
     }
