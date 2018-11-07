@@ -14,7 +14,7 @@ case class ROMInfo(name: String, cloneof: String, description: String, publisher
 class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]) {
   // Load and parse category file
   // FIXME: https://github.com/mamesupport/catver.ini/blob/master/catver.ini
-  val catverFile: String = getClass.getResource("/catver.ini").getFile
+  val catverStream = getClass.getResourceAsStream("/catver.ini")
 
   def validCategory(category: String): Boolean =
     categoriesToFilter
@@ -28,7 +28,7 @@ class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]
         publisher.toLowerCase.contains(publisherToFilter.toLowerCase)
       } == 0
 
-  val categories: Seq[(String, CategoryInfo)] = Source.fromFile(catverFile)
+  val categories: Seq[(String, CategoryInfo)] = Source.fromInputStream(catverStream)
     .getLines
     .filter(_.trim.nonEmpty)
     .filterNot(_.startsWith(";;"))
@@ -46,8 +46,8 @@ class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]
   val categoryByROM: Map[String, CategoryInfo] = Map(categories: _*)
 
   // Load and parse MAME XML database
-  val xmlFile: String = getClass.getResource("/listsoftware.0188.xml").getFile
-  val softwarelists: Elem = scala.xml.XML.loadFile(xmlFile)
+  val xmlStream = getClass.getResourceAsStream("/listsoftware.0188.xml")
+  val softwarelists: Elem = scala.xml.XML.load(xmlStream)
   val software: NodeSeq = softwarelists \ "softwarelist" \ "software"
 
   val infos: List[ROMInfo] = software

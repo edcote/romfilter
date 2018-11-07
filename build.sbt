@@ -2,7 +2,7 @@ organization := "com.edmondcote"
 
 name := "romfilter"
 
-version := "1.0-SNAPSHOT"
+version := "1.0"
 
 scalaVersion := "2.12.6"
 
@@ -14,3 +14,4 @@ libraryDependencies ++= Seq(
 )
 
 fork := true // needed by scala-xml, workaround earlier pre-1.1.2 versions of sbt
+
