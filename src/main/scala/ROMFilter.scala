@@ -21,7 +21,6 @@ class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]
         category.toLowerCase.contains(categoryToFilter.toLowerCase)
       } == 0
 
-
   val categories: Seq[(String, CategoryInfo)] = Source.fromFile(catverFile)
     .getLines
     .filter(_.trim.nonEmpty)

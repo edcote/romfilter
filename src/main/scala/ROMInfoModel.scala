@@ -15,9 +15,9 @@ class ROMInfoModel extends AbstractTableModel {
 
   override def getColumnName(column: Int): String = headers(column)
 
-  override def getColumnCount: Int = 4
+  override def getColumnCount: Int = headers.length
 
-  override def getValueAt(rowIndex: Int, columnIndex: Int): AnyRef = {
+  override def getValueAt(rowIndex: Int, columnIndex: Int): String = {
     val info = infos(rowIndex)
 
     columnIndex match {
@@ -27,6 +27,10 @@ class ROMInfoModel extends AbstractTableModel {
       case 3 => info.year
       case _ => throw new NoSuchElementException("Invalid column")
     }
+  }
+
+  override def getColumnClass(columnIndex: Int): Class[_ <: String] = {
+    getValueAt(0, columnIndex).getClass
   }
 
 }

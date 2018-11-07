@@ -77,15 +77,14 @@ object ROMFilterUI extends SimpleSwingApplication {
     layout(new ScrollPane(categoriesToFilterArea)) = constraints(1, 1, fill = GridBagPanel.Fill.Both)
 
     // 2, 1
-    var initial = Array(Array("", "", "", ""))
-    val names = Array("Name", "Description", "Category", "Year")
     val model = new ROMInfoModel()
 
-    val table2dot1 = new Table(initial.asInstanceOf[Array[Array[Any]]], names.asInstanceOf[Array[Any]]) {
+    val table2dot1 = new Table(0, 0) {
       autoResizeMode = AutoResizeMode.AllColumns
-      visible = false
     }
     layout(new ScrollPane(table2dot1)) = constraints(2, 1, weightX = 2.0, fill = GridBagPanel.Fill.Both)
+    table2dot1.peer.setAutoCreateRowSorter(true)
+    table2dot1.model = model
 
     // 0, 2
     val filterButton = new Button("Filter")
@@ -105,9 +104,9 @@ object ROMFilterUI extends SimpleSwingApplication {
           .foreach { info =>
             // FIXME: make immutable
             model.infos.append(info)
+            model.fireTableDataChanged()
           }
-        table2dot1.visible = true
-        table2dot1.model = model
+        println("Filter DONE!")
 
       case ButtonClicked(`cancelButton`) =>
         sys.exit(0)
