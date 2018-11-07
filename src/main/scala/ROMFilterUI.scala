@@ -1,7 +1,6 @@
 package romfilter
 
 import javax.swing.JTable
-import javax.swing.table.TableRowSorter
 
 import scala.swing.Table.AutoResizeMode
 import scala.swing._
@@ -15,16 +14,22 @@ object ROMFilterUI extends SimpleSwingApplication {
 
   private val defaultPublishersToFilter =
     """
-      |<doujin>
-      |<homebrew>
-      |&lt;unknown&gt;
-      |<unknown>
+      |bootleg
+      |cart2disk
+      |doujin
+      |homebrew
+      |tape2disk
+      |type-in
+      |unknown
+      |unlicensed
     """.stripMargin.trim
 
   private val defaultCategoriesToFilter =
     """
+      |Ball & Paddle
       |BIOS
       |Casino
+      |Climber
       |Mahjong
       |Mature
       |Maze
@@ -35,6 +40,7 @@ object ROMFilterUI extends SimpleSwingApplication {
       |Puzzle / Sliding
       |Quiz
       |Rhythm
+      |Sports / Armwrestling
       |Sports / Bull Fighting
       |Sports / Darts
       |Sports / Fishing
@@ -80,23 +86,18 @@ object ROMFilterUI extends SimpleSwingApplication {
     layout(new ScrollPane(categoriesToFilterArea)) = constraints(1, 1, fill = GridBagPanel.Fill.Both)
 
     // 2, 1
-    val model = new ROMInfoModel()
-    val rowSorter = new TableRowSorter(model)
-    //    for (col <- names.indices) {
-    //      rowSorter.setSortable(col, true)
-    //    }
-
 
     val table2dot1 = new Table(0, 0) {
       autoResizeMode = AutoResizeMode.AllColumns
-      //      peer.setRowSorter(rowSorter)
       // see: https://stackoverflow.com/questions/31092309/jtable-doesnt-sort-despite-having-enabled-auto-row-sorter-and-using-comparabl
       override lazy val peer: JTable = new JTable with SuperMixin
     }
     layout(new ScrollPane(table2dot1)) = constraints(2, 1, weightX = 2.0, fill = GridBagPanel.Fill.Both)
 
-    table2dot1.peer.setAutoCreateRowSorter(true)
+    val model = new ROMInfoModel()
     table2dot1.model = model
+
+    table2dot1.peer.setAutoCreateRowSorter(true)
 
     // 0, 2
     val filterButton = new Button("Filter")
@@ -111,6 +112,8 @@ object ROMFilterUI extends SimpleSwingApplication {
     // Event handling
     reactions += {
       case ButtonClicked(`filterButton`) =>
+        model.infos.clear()
+
         new ROMFilter(publishersToFilterArea.text.split("\n"), categoriesToFilterArea.text.split("\n"))
           .infos
           .foreach { info =>
@@ -118,6 +121,7 @@ object ROMFilterUI extends SimpleSwingApplication {
             model.infos.append(info)
             model.fireTableDataChanged()
           }
+
         Dialog.showMessage(contents.head, "Success!")
       case ButtonClicked(`cancelButton`) =>
         sys.exit(0)
@@ -131,4 +135,3 @@ object ROMFilterUI extends SimpleSwingApplication {
   }
 
 }
-

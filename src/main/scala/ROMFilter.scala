@@ -22,6 +22,12 @@ class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]
         category.toLowerCase.contains(categoryToFilter.toLowerCase)
       } == 0
 
+  def validPublisher(publisher: String): Boolean =
+    publishersToFilter
+      .count { publisherToFilter: String =>
+        publisher.toLowerCase.contains(publisherToFilter.toLowerCase)
+      } == 0
+
   val categories: Seq[(String, CategoryInfo)] = Source.fromFile(catverFile)
     .getLines
     .filter(_.trim.nonEmpty)
@@ -52,7 +58,7 @@ class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]
       val description = node \ "description"
       val publisher = node \ "publisher"
       val year = node \ "year"
-      if (categoryByROM.contains(name)) {
+      if (categoryByROM.contains(name) && validPublisher(publisher.text)) {
         val category = categoryByROM(name)
         Some(ROMInfo(name, cloneof, description.text, publisher.text, year.text, category))
       } else {
@@ -62,42 +68,4 @@ class ROMFilter(publishersToFilter: Seq[String], categoriesToFilter: Seq[String]
     .filter(_.isValid)
     .toList
 
-}
-
-object ROMFilter {
-  def main(args: Array[String]): Unit = {
-    val publishersToFilter: Seq[String] =
-      """
-        |<doujin>
-        |<homebrew>
-        |&lt;unknown&gt;
-        |<unknown>
-      """.stripMargin.trim.split(System.lineSeparator())
-
-    val categoriesToFilter: Seq[String] =
-      """
-        |BIOS
-        |Casino
-        |Mahjong
-        |Mature
-        |Maze
-        |Mini-Games
-        |Misc.
-        |Misc. Betting
-        |Puzzle / Cards
-        |Puzzle / Sliding
-        |Quiz
-        |Rhythm
-        |Sports / Bull Fighting
-        |Sports / Darts
-        |Sports / Fishing
-        |Sports / Horse Racing
-        |Sports / Horseshoes
-        |Surround
-        |Tabletop
-        |Unplayable
-      """.stripMargin.trim.split(System.lineSeparator())
-
-    val romFilter = new ROMFilter(publishersToFilter, categoriesToFilter)
-  }
 }

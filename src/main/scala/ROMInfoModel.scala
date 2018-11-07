@@ -5,7 +5,7 @@ import javax.swing.table.AbstractTableModel
 import scala.collection.mutable
 
 class ROMInfoModel extends AbstractTableModel {
-  val headers = Array("Name", "Description", "Category", "Year")
+  val headers = Array("Name", "Description", "Category", "Year", "Publisher")
 
   val infos: mutable.ArrayBuffer[ROMInfo] = new mutable.ArrayBuffer()
 
@@ -25,6 +25,7 @@ class ROMInfoModel extends AbstractTableModel {
       case 1 => info.description
       case 2 => info.category.category
       case 3 => info.year
+      case 4 => info.publisher
       case _ => throw new NoSuchElementException("Invalid column")
     }
   }
